@@ -115,15 +115,16 @@ const ChartTooltipContent = React.forwardRef<
       hideIndicator = false,
       label,
       labelFormatter,
-      labelClassName,
       formatter,
       color,
       nameKey,
       labelKey,
+      ...rest
     },
     ref,
   ) => {
     const { config } = useChart();
+    const labelClassName = (rest as Record<string, unknown>).labelClassName as string | undefined;
 
     const tooltipLabel = React.useMemo(() => {
       if (hideLabel || !payload?.length) {
@@ -131,7 +132,7 @@ const ChartTooltipContent = React.forwardRef<
       }
 
       const [item] = payload;
-      const key = `${labelKey || item.dataKey || item.name || "value"}`;
+      const key = `${labelKey || (item as Record<string, unknown>).dataKey || (item as Record<string, unknown>).name || "value"}`;
       const itemConfig = getPayloadConfigFromPayload(config, item, key);
       const value =
         !labelKey && typeof label === "string"
@@ -139,7 +140,7 @@ const ChartTooltipContent = React.forwardRef<
           : itemConfig?.label;
 
       if (labelFormatter) {
-        return <div className={cn("font-medium", labelClassName)}>{labelFormatter(value, payload)}</div>;
+        return <div className={cn("font-medium", labelClassName)}>{labelFormatter(String(value ?? ""), payload)}</div>;
       }
 
       if (!value) {
