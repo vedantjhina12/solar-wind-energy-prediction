@@ -1,28 +1,37 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { Upload, BarChart3, Map, AlertTriangle, Phone, TrendingUp, Target, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "@/hooks/useTranslation";
+import { TranslationKey } from "@/lib/translations";
 
-const solarLinks = [
-  { to: "/solar/upload", label: "Upload", icon: Upload },
-  { to: "/solar/results", label: "Results", icon: BarChart3 },
+interface SidebarLink {
+  to: string;
+  labelKey: TranslationKey;
+  icon: any;
+}
+
+const solarLinks: SidebarLink[] = [
+  { to: "/solar/upload", labelKey: "sidebar.upload", icon: Upload },
+  { to: "/solar/results", labelKey: "sidebar.results", icon: BarChart3 },
 ];
 
-const windLinks = [
-  { to: "/wind/map", label: "Live Map", icon: Map },
-  { to: "/wind/alerts", label: "Alert Log", icon: AlertTriangle },
-  { to: "/wind/calls", label: "Call Log", icon: Phone },
-  { to: "/wind/forecast", label: "Forecast", icon: TrendingUp },
-  { to: "/wind/accuracy", label: "Accuracy", icon: Target },
+const windLinks: SidebarLink[] = [
+  { to: "/wind/map", labelKey: "sidebar.liveMap", icon: Map },
+  { to: "/wind/alerts", labelKey: "sidebar.alertLog", icon: AlertTriangle },
+  { to: "/wind/calls", labelKey: "sidebar.callLog", icon: Phone },
+  { to: "/wind/forecast", labelKey: "sidebar.forecast", icon: TrendingUp },
+  { to: "/wind/accuracy", labelKey: "sidebar.accuracy", icon: Target },
 ];
 
 export function AppSidebar() {
   const { pathname } = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const { t } = useTranslation();
 
   const isSolar = pathname.startsWith("/solar");
   const isWind = pathname.startsWith("/wind");
   const links = isSolar ? solarLinks : isWind ? windLinks : [];
-  const sectionTitle = isSolar ? "Solar Analysis" : isWind ? "Wind Monitor" : "";
+  const sectionTitleKey: TranslationKey | "" = isSolar ? "sidebar.solarAnalysis" : isWind ? "sidebar.windMonitor" : "";
 
   if (!links.length) return null;
 
@@ -33,7 +42,7 @@ export function AppSidebar() {
       }`}
     >
       <div className="flex items-center justify-between px-3 py-3 border-b border-border/50">
-        {!collapsed && <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{sectionTitle}</span>}
+        {!collapsed && <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{sectionTitleKey ? t(sectionTitleKey) : ""}</span>}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="p-1 rounded hover:bg-secondary text-muted-foreground"
@@ -55,7 +64,7 @@ export function AppSidebar() {
             }
           >
             <link.icon className="w-4 h-4 shrink-0" />
-            {!collapsed && <span>{link.label}</span>}
+            {!collapsed && <span>{t(link.labelKey)}</span>}
           </NavLink>
         ))}
       </nav>
