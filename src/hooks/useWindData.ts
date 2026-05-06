@@ -2,7 +2,7 @@ import { useQueries } from "@tanstack/react-query";
 
 // ─── Configuration ──────────────────────────────────────────────────
 // Replace with your OpenWeatherMap API key
-const OWM_API_KEY = "2c0425e797102f6cc85687e7b372f584";
+const OWM_API_KEY = import.meta.env.VITE_OWM_API_KEY || "";
 const REFETCH_INTERVAL = 60_000; // 60 seconds
 
 // ─── Karnataka Locations ────────────────────────────────────────────
